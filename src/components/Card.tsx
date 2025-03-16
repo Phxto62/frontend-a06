@@ -1,9 +1,8 @@
-import Image from 'next/image'
+import Image from 'next/image';
 import InteractiveCard from './InteractiveCard';
 import Rating from '@mui/material/Rating';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-// Define Card Props Type
 type CardProps = {
   venueName: string;
   imgSrc: string;
@@ -14,15 +13,21 @@ type CardProps = {
 export default function Card({ venueName, imgSrc, rating, onRatingChange }: CardProps) {
   const [localRating, setLocalRating] = useState<number | null>(rating);
 
+  // Sync local rating if parent changes
+  useEffect(() => {
+    setLocalRating(rating);
+  }, [rating]);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number | null) => {
     setLocalRating(newValue);
-    onRatingChange(venueName, newValue); // Notify parent (CardPanel)
+    onRatingChange(venueName, newValue); // Notify parent
   };
 
   return (
     <InteractiveCard contentName={venueName}>
       <div className='w-full h-[70%] relative rounded-t-lg'>
-        <Image src={imgSrc}
+        <Image
+          src={imgSrc}
           alt='Hall Picture'
           fill={true}
           className='object-cover rounded-t-lg'
